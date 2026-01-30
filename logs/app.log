@@ -1,0 +1,141 @@
+2026-01-27 10:20:10,781 ERROR org.springframework.boot.SpringApplication [restartedMain] Application run failed
+java.lang.IllegalStateException: java.lang.IllegalStateException: Logback configuration error detected: 
+ERROR in ch.qos.logback.classic.pattern.LoggerConverter@c3df4d3 - failed to parse integer string [1.] java.lang.NumberFormatException: For input string: "1."
+	at org.springframework.boot.context.logging.LoggingApplicationListener.initializeSystem(LoggingApplicationListener.java:352)
+	at org.springframework.boot.context.logging.LoggingApplicationListener.initialize(LoggingApplicationListener.java:302)
+	at org.springframework.boot.context.logging.LoggingApplicationListener.onApplicationEnvironmentPreparedEvent(LoggingApplicationListener.java:248)
+	at org.springframework.boot.context.logging.LoggingApplicationListener.onApplicationEvent(LoggingApplicationListener.java:225)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.doInvokeListener(SimpleApplicationEventMulticaster.java:180)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.invokeListener(SimpleApplicationEventMulticaster.java:173)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.multicastEvent(SimpleApplicationEventMulticaster.java:151)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.multicastEvent(SimpleApplicationEventMulticaster.java:133)
+	at org.springframework.boot.context.event.EventPublishingRunListener.multicastInitialEvent(EventPublishingRunListener.java:137)
+	at org.springframework.boot.context.event.EventPublishingRunListener.environmentPrepared(EventPublishingRunListener.java:82)
+	at org.springframework.boot.SpringApplicationRunListeners.lambda$environmentPrepared$0(SpringApplicationRunListeners.java:66)
+	at java.base/java.lang.Iterable.forEach(Iterable.java:75)
+	at org.springframework.boot.SpringApplicationRunListeners.doWithListeners(SpringApplicationRunListeners.java:123)
+	at org.springframework.boot.SpringApplicationRunListeners.doWithListeners(SpringApplicationRunListeners.java:117)
+	at org.springframework.boot.SpringApplicationRunListeners.environmentPrepared(SpringApplicationRunListeners.java:65)
+	at org.springframework.boot.SpringApplication.prepareEnvironment(SpringApplication.java:356)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:316)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1365)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1354)
+	at org.springframework.samples.petclinic.PetClinicApplication.main(PetClinicApplication.java:33)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:52)
+Caused by: java.lang.IllegalStateException: Logback configuration error detected: 
+ERROR in ch.qos.logback.classic.pattern.LoggerConverter@c3df4d3 - failed to parse integer string [1.] java.lang.NumberFormatException: For input string: "1."
+	at org.springframework.boot.logging.logback.LogbackLoggingSystem.reportConfigurationErrorsIfNecessary(LogbackLoggingSystem.java:296)
+	at org.springframework.boot.logging.logback.LogbackLoggingSystem.loadConfiguration(LogbackLoggingSystem.java:274)
+	at org.springframework.boot.logging.logback.LogbackLoggingSystem.reinitialize(LogbackLoggingSystem.java:351)
+	at org.springframework.boot.logging.AbstractLoggingSystem.initializeWithConventions(AbstractLoggingSystem.java:79)
+	at org.springframework.boot.logging.AbstractLoggingSystem.initialize(AbstractLoggingSystem.java:65)
+	at org.springframework.boot.logging.logback.LogbackLoggingSystem.initialize(LogbackLoggingSystem.java:197)
+	at org.springframework.boot.context.logging.LoggingApplicationListener.initializeSystem(LoggingApplicationListener.java:337)
+	... 22 common frames omitted
+	Suppressed: java.lang.NumberFormatException: For input string: "1."
+		at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+		at java.base/java.lang.Integer.parseInt(Integer.java:662)
+		at java.base/java.lang.Integer.parseInt(Integer.java:778)
+		at ch.qos.logback.classic.pattern.NamedConverter.start(NamedConverter.java:92)
+		at ch.qos.logback.core.pattern.ConverterUtil.startConverters(ConverterUtil.java:37)
+		at ch.qos.logback.core.pattern.PatternLayoutBase.start(PatternLayoutBase.java:148)
+		at ch.qos.logback.classic.encoder.PatternLayoutEncoder.start(PatternLayoutEncoder.java:28)
+		at ch.qos.logback.core.model.processor.ImplicitModelHandler.postHandleComplex(ImplicitModelHandler.java:207)
+		at ch.qos.logback.core.model.processor.ImplicitModelHandler.postHandle(ImplicitModelHandler.java:186)
+		at ch.qos.logback.core.model.processor.DefaultProcessor.secondPhaseTraverse(DefaultProcessor.java:257)
+		at ch.qos.logback.core.model.processor.DefaultProcessor.secondPhaseTraverse(DefaultProcessor.java:253)
+		at ch.qos.logback.core.model.processor.DefaultProcessor.secondPhaseTraverse(DefaultProcessor.java:253)
+		at ch.qos.logback.core.model.processor.DefaultProcessor.traversalLoop(DefaultProcessor.java:90)
+		at ch.qos.logback.core.model.processor.DefaultProcessor.process(DefaultProcessor.java:106)
+		at ch.qos.logback.core.joran.GenericXMLConfigurator.processModel(GenericXMLConfigurator.java:222)
+		at org.springframework.boot.logging.logback.SpringBootJoranConfigurator.processModel(SpringBootJoranConfigurator.java:139)
+		at ch.qos.logback.core.joran.GenericXMLConfigurator.doConfigure(GenericXMLConfigurator.java:178)
+		at ch.qos.logback.core.joran.GenericXMLConfigurator.doConfigure(GenericXMLConfigurator.java:123)
+		at ch.qos.logback.core.joran.GenericXMLConfigurator.doConfigure(GenericXMLConfigurator.java:66)
+		at org.springframework.boot.logging.logback.LogbackLoggingSystem.configureByResourceUrl(LogbackLoggingSystem.java:305)
+		at org.springframework.boot.logging.logback.LogbackLoggingSystem.lambda$loadConfiguration$0(LogbackLoggingSystem.java:267)
+		at org.springframework.boot.logging.logback.LogbackLoggingSystem.withLoggingSuppressed(LogbackLoggingSystem.java:491)
+		at org.springframework.boot.logging.logback.LogbackLoggingSystem.loadConfiguration(LogbackLoggingSystem.java:257)
+		... 27 common frames omitted
+2026-01-27 10:28:40,873 ERROR org.springframework.boot.SpringApplication [restartedMain] Application run failed
+java.lang.IllegalStateException: java.lang.IllegalStateException: Logback configuration error detected: 
+ERROR in ch.qos.logback.classic.pattern.LoggerConverter@51727ef6 - failed to parse integer string [1.] java.lang.NumberFormatException: For input string: "1."
+	at org.springframework.boot.context.logging.LoggingApplicationListener.initializeSystem(LoggingApplicationListener.java:352)
+	at org.springframework.boot.context.logging.LoggingApplicationListener.initialize(LoggingApplicationListener.java:302)
+	at org.springframework.boot.context.logging.LoggingApplicationListener.onApplicationEnvironmentPreparedEvent(LoggingApplicationListener.java:248)
+	at org.springframework.boot.context.logging.LoggingApplicationListener.onApplicationEvent(LoggingApplicationListener.java:225)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.doInvokeListener(SimpleApplicationEventMulticaster.java:180)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.invokeListener(SimpleApplicationEventMulticaster.java:173)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.multicastEvent(SimpleApplicationEventMulticaster.java:151)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.multicastEvent(SimpleApplicationEventMulticaster.java:133)
+	at org.springframework.boot.context.event.EventPublishingRunListener.multicastInitialEvent(EventPublishingRunListener.java:137)
+	at org.springframework.boot.context.event.EventPublishingRunListener.environmentPrepared(EventPublishingRunListener.java:82)
+	at org.springframework.boot.SpringApplicationRunListeners.lambda$environmentPrepared$0(SpringApplicationRunListeners.java:66)
+	at java.base/java.lang.Iterable.forEach(Iterable.java:75)
+	at org.springframework.boot.SpringApplicationRunListeners.doWithListeners(SpringApplicationRunListeners.java:123)
+	at org.springframework.boot.SpringApplicationRunListeners.doWithListeners(SpringApplicationRunListeners.java:117)
+	at org.springframework.boot.SpringApplicationRunListeners.environmentPrepared(SpringApplicationRunListeners.java:65)
+	at org.springframework.boot.SpringApplication.prepareEnvironment(SpringApplication.java:356)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:316)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1365)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1354)
+	at org.springframework.samples.petclinic.PetClinicApplication.main(PetClinicApplication.java:33)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:52)
+Caused by: java.lang.IllegalStateException: Logback configuration error detected: 
+ERROR in ch.qos.logback.classic.pattern.LoggerConverter@51727ef6 - failed to parse integer string [1.] java.lang.NumberFormatException: For input string: "1."
+	at org.springframework.boot.logging.logback.LogbackLoggingSystem.reportConfigurationErrorsIfNecessary(LogbackLoggingSystem.java:296)
+	at org.springframework.boot.logging.logback.LogbackLoggingSystem.loadConfiguration(LogbackLoggingSystem.java:274)
+	at org.springframework.boot.logging.logback.LogbackLoggingSystem.reinitialize(LogbackLoggingSystem.java:351)
+	at org.springframework.boot.logging.AbstractLoggingSystem.initializeWithConventions(AbstractLoggingSystem.java:79)
+	at org.springframework.boot.logging.AbstractLoggingSystem.initialize(AbstractLoggingSystem.java:65)
+	at org.springframework.boot.logging.logback.LogbackLoggingSystem.initialize(LogbackLoggingSystem.java:197)
+	at org.springframework.boot.context.logging.LoggingApplicationListener.initializeSystem(LoggingApplicationListener.java:337)
+	... 22 common frames omitted
+	Suppressed: java.lang.NumberFormatException: For input string: "1."
+		at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+		at java.base/java.lang.Integer.parseInt(Integer.java:662)
+		at java.base/java.lang.Integer.parseInt(Integer.java:778)
+		at ch.qos.logback.classic.pattern.NamedConverter.start(NamedConverter.java:92)
+		at ch.qos.logback.core.pattern.ConverterUtil.startConverters(ConverterUtil.java:37)
+		at ch.qos.logback.core.pattern.PatternLayoutBase.start(PatternLayoutBase.java:148)
+		at ch.qos.logback.classic.encoder.PatternLayoutEncoder.start(PatternLayoutEncoder.java:28)
+		at ch.qos.logback.core.model.processor.ImplicitModelHandler.postHandleComplex(ImplicitModelHandler.java:207)
+		at ch.qos.logback.core.model.processor.ImplicitModelHandler.postHandle(ImplicitModelHandler.java:186)
+		at ch.qos.logback.core.model.processor.DefaultProcessor.secondPhaseTraverse(DefaultProcessor.java:257)
+		at ch.qos.logback.core.model.processor.DefaultProcessor.secondPhaseTraverse(DefaultProcessor.java:253)
+		at ch.qos.logback.core.model.processor.DefaultProcessor.secondPhaseTraverse(DefaultProcessor.java:253)
+		at ch.qos.logback.core.model.processor.DefaultProcessor.traversalLoop(DefaultProcessor.java:90)
+		at ch.qos.logback.core.model.processor.DefaultProcessor.process(DefaultProcessor.java:106)
+		at ch.qos.logback.core.joran.GenericXMLConfigurator.processModel(GenericXMLConfigurator.java:222)
+		at org.springframework.boot.logging.logback.SpringBootJoranConfigurator.processModel(SpringBootJoranConfigurator.java:139)
+		at ch.qos.logback.core.joran.GenericXMLConfigurator.doConfigure(GenericXMLConfigurator.java:178)
+		at ch.qos.logback.core.joran.GenericXMLConfigurator.doConfigure(GenericXMLConfigurator.java:123)
+		at ch.qos.logback.core.joran.GenericXMLConfigurator.doConfigure(GenericXMLConfigurator.java:66)
+		at org.springframework.boot.logging.logback.LogbackLoggingSystem.configureByResourceUrl(LogbackLoggingSystem.java:305)
+		at org.springframework.boot.logging.logback.LogbackLoggingSystem.lambda$loadConfiguration$0(LogbackLoggingSystem.java:267)
+		at org.springframework.boot.logging.logback.LogbackLoggingSystem.withLoggingSuppressed(LogbackLoggingSystem.java:491)
+		at org.springframework.boot.logging.logback.LogbackLoggingSystem.loadConfiguration(LogbackLoggingSystem.java:257)
+		... 27 common frames omitted
+2026-01-27 10:52:59,413 INFO o.s.s.p.PetClinicApplication [restartedMain] Starting PetClinicApplication using Java 21.0.3 with PID 38609 (/Users/nissrineourdane/Documents/projetci-cd/spring-petclinic/target/classes started by nissrineourdane in /Users/nissrineourdane/Documents/projetci-cd/spring-petclinic)
+2026-01-27 10:52:59,413 INFO o.s.s.p.PetClinicApplication [restartedMain] No active profile set, falling back to 1 default profile: "default"
+2026-01-27 10:52:59,578 INFO o.s.d.r.c.RepositoryConfigurationDelegate [restartedMain] Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-01-27 10:52:59,588 INFO o.s.d.r.c.RepositoryConfigurationDelegate [restartedMain] Finished Spring Data repository scanning in 8 ms. Found 3 JPA repository interfaces.
+2026-01-27 10:52:59,757 INFO o.s.b.t.TomcatWebServer [restartedMain] Tomcat initialized with port 8081 (http)
+2026-01-27 10:52:59,767 INFO o.s.b.w.c.s.WebApplicationContextInitializer [restartedMain] Root WebApplicationContext: initialization completed in 352 ms
+2026-01-27 10:52:59,915 INFO o.s.o.j.p.SpringPersistenceUnitInfo [restartedMain] No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-01-27 10:52:59,990 INFO o.s.o.j.LocalContainerEntityManagerFactoryBean [restartedMain] Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-01-27 10:53:00,222 INFO o.s.b.a.e.w.EndpointLinksResolver [restartedMain] Exposing 13 endpoints beneath base path '/actuator'
+2026-01-27 10:53:00,243 INFO o.s.b.t.TomcatWebServer [restartedMain] Tomcat started on port 8081 (http) with context path '/'
+2026-01-27 10:53:00,246 INFO o.s.s.p.PetClinicApplication [restartedMain] Started PetClinicApplication in 0.866 seconds (process running for 16840.359)
+2026-01-27 10:53:00,247 INFO o.s.b.d.a.ConditionEvaluationDeltaLoggingListener [restartedMain] Condition evaluation unchanged
+2026-01-27 10:59:08,268 INFO o.s.w.s.DispatcherServlet [http-nio-8081-exec-1] Initializing Servlet 'dispatcherServlet'
+2026-01-27 10:59:08,300 INFO o.s.w.s.DispatcherServlet [http-nio-8081-exec-1] Completed initialization in 20 ms
+2026-01-27 21:59:55,944 INFO o.s.b.t.GracefulShutdown [SpringApplicationShutdownHook] Commencing graceful shutdown. Waiting for active requests to complete
+2026-01-27 21:59:55,982 INFO o.s.b.t.GracefulShutdown [tomcat-shutdown] Graceful shutdown complete
+2026-01-27 21:59:56,008 INFO o.s.o.j.LocalContainerEntityManagerFactoryBean [SpringApplicationShutdownHook] Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-01-27 21:59:56,075 WARN o.s.b.f.s.DisposableBeanAdapter [SpringApplicationShutdownHook] Invocation of destroy method failed on bean with name 'inMemoryDatabaseShutdownExecutor': org.h2.jdbc.JdbcSQLNonTransientConnectionException: La base de données est déjà fermée (pour désactiver la fermeture automatique à l'arrêt de la VM, ajoutez "; DB_CLOSE_ON_EXIT = FALSE" à l'URL db)
+Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-240]
