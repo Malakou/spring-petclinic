@@ -69,8 +69,9 @@ pipeline {
             exit 1
           fi
 
-          echo "Petclinic is healthy, running HTTP check..."
-          curl -fsS http://localhost:9123/ >/dev/null
+          echo "Petclinic is healthy. Testing HTTP from inside container..."
+          docker exec "$PET_ID" curl -fsS http://localhost:8080/ >/dev/null
+
           echo "✅ Smoke test OK"
         '''
       }
