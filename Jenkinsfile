@@ -22,17 +22,17 @@ pipeline {
             }
         }
 
-        stage("Build images from docker-compose") {
+        stage("Build images from docker compose") {
             steps {
                 sh """
                     set -e
 
                     echo "=== Docker versions ==="
                     docker --version
-                    docker-compose --version
+                    docker compose --version
 
                     echo "=== Build images (BuildKit ON) ==="
-                    docker-compose build
+                    docker compose build
                 """
             }
         }
@@ -42,10 +42,10 @@ pipeline {
                 sh """
                     set -e
                     echo "=== Start containers ==="
-                    docker-compose up -d
+                    docker compose up -d
 
                     echo "=== Containers status ==="
-                    docker-compose ps
+                    docker compose ps
                 """
             }
         }
@@ -57,7 +57,7 @@ pipeline {
 
                     echo "=== Waiting for Petclinic health ==="
 
-                    PET_ID=\$(docker-compose ps -q petclinic)
+                    PET_ID=\$(docker compose ps -q petclinic)
 
                     if [ -z "\$PET_ID" ]; then
                       echo "❌ Petclinic container not found"
@@ -101,7 +101,7 @@ pipeline {
 
             sh """
                 echo "=== Logs (last 100 lines) ==="
-                docker-compose logs --tail=100 || true
+                docker compose logs --tail=100 || true
             """
 
             script {
@@ -110,7 +110,7 @@ pipeline {
                     echo "➡️ Open in browser: http://localhost:9123"
                 } else {
                     echo "🧹 KEEP_RUNNING=false → cleaning containers..."
-                    sh "docker-compose down -v --remove-orphans"
+                    sh "docker compose down -v --remove-orphans"
                 }
             }
         }
