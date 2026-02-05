@@ -1,16 +1,18 @@
 pipeline {
 
+    // Le pipeline peut s’exécuter sur n’importe quel agent Jenkins disponible
     agent any
 
     environment {
 
-        // ✅ Active BuildKit (important pour cache Maven)
+        // Activation de Docker BuildKit pour améliorer les performances de build
+        // (cache Maven notamment avec les Dockerfiles multi-stage)
         DOCKER_BUILDKIT = "1"
         COMPOSE_DOCKER_CLI_BUILD = "1"
 
-        // 🔥 Switch :
-        // true  = conteneurs restent actifs après pipeline
-        // false = nettoyage automatique
+        // Variable de contrôle :
+        // true  -> les conteneurs restent actifs après la fin du pipeline
+        // false -> les conteneurs sont supprimés automatiquement
         KEEP_RUNNING = "true"
     }
 
@@ -18,6 +20,7 @@ pipeline {
 
         stage("Checkout") {
             steps {
+                // Récupération du code source depuis le dépôt Git configuré dans Jenkins
                 checkout scm
             }
         }
@@ -31,7 +34,8 @@ pipeline {
                     docker --version
                     docker compose --version
 
-                    echo "=== Build images (BuildKit ON) ==="
+                    echo "=== Build des images Docker via docker compose ==="
+                    // Construction des images définies dans docker-compose.yml
                     docker compose build
                 """
             }
@@ -41,10 +45,12 @@ pipeline {
             steps {
                 sh """
                     set -e
-                    echo "=== Start containers ==="
+
+                    echo "=== Démarrage des conteneurs ==="
+                    // Lancement de l'application et de la base de données en arrière-plan
                     docker compose up -d
 
-                    echo "=== Containers status ==="
+                    echo "=== État des conteneurs ==="
                     docker compose ps
                 """
             }
@@ -55,18 +61,20 @@ pipeline {
                 sh """
                     set -e
 
-                    echo "=== Waiting for Petclinic health ==="
+                    echo "=== Attente du healthcheck de Petclinic ==="
 
+                    // Récupération de l’ID du conteneur petclinic
                     PET_ID=\$(docker compose ps -q petclinic)
 
                     if [ -z "\$PET_ID" ]; then
-                      echo "❌ Petclinic container not found"
+                      echo "Petclinic container not found"
                       exit 1
                     fi
 
                     echo "Petclinic container ID: \$PET_ID"
                     echo "Waiting for health=healthy (max 180s)..."
 
+                    // Boucle d’attente du statut healthy (max 180 secondes)
                     for i in \$(seq 1 90); do
                       STATUS=\$(docker inspect -f '{{.State.Health.Status}}' \$PET_ID)
                       echo "Health status: \$STATUS"
@@ -81,16 +89,17 @@ pipeline {
                     STATUS=\$(docker inspect -f '{{.State.Health.Status}}' \$PET_ID)
 
                     if [ "\$STATUS" != "healthy" ]; then
-                      echo "❌ Petclinic did not become healthy"
+                      echo "Petclinic did not become healthy"
                       exit 1
                     fi
 
-                    echo "✅ Petclinic is healthy!"
-                    echo "=== Smoke test HTTP inside container ==="
+                    echo "Petclinic is healthy"
+                    echo "=== Smoke test HTTP depuis le conteneur ==="
 
+                    // Test HTTP exécuté depuis le conteneur pour éviter les problèmes réseau Jenkins/host
                     docker exec \$PET_ID curl -fsS http://localhost:8080/
 
-                    echo "✅ Smoke test OK"
+                    echo "Smoke test OK"
                 """
             }
         }
@@ -99,6 +108,7 @@ pipeline {
     post {
         always {
 
+            // Affichage des logs pour faciliter le debug en cas d’échec
             sh """
                 echo "=== Logs (last 100 lines) ==="
                 docker compose logs --tail=100 || true
@@ -106,10 +116,10 @@ pipeline {
 
             script {
                 if (env.KEEP_RUNNING == "true") {
-                    echo "🔥 KEEP_RUNNING=true → containers are kept running"
-                    echo "➡️ Open in browser: http://localhost:9123"
+                    echo "KEEP_RUNNING=true : les conteneurs restent actifs"
+                    echo "Application accessible sur : http://localhost:9123"
                 } else {
-                    echo "🧹 KEEP_RUNNING=false → cleaning containers..."
+                    echo "KEEP_RUNNING=false : nettoyage des conteneurs"
                     sh "docker compose down -v --remove-orphans"
                 }
             }
