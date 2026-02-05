@@ -5,8 +5,7 @@ pipeline {
 
     environment {
 
-        // Activation de Docker BuildKit pour améliorer les performances de build
-        // (cache Maven notamment avec les Dockerfiles multi-stage)
+        // Active Docker BuildKit (utile pour optimiser les builds, notamment avec cache Maven)
         DOCKER_BUILDKIT = "1"
         COMPOSE_DOCKER_CLI_BUILD = "1"
 
@@ -32,10 +31,13 @@ pipeline {
 
                     echo "=== Docker versions ==="
                     docker --version
-                    docker compose --version
+
+                    # Sur certaines installations, 'docker compose --version' n'affiche pas directement une version.
+                    # Dans ce cas, on utilise la commande dédiée.
+                    docker compose version || docker compose --version || true
 
                     echo "=== Build des images Docker via docker compose ==="
-                    // Construction des images définies dans docker-compose.yml
+                    # Construction des images définies dans docker-compose.yml
                     docker compose build
                 """
             }
@@ -47,7 +49,7 @@ pipeline {
                     set -e
 
                     echo "=== Démarrage des conteneurs ==="
-                    // Lancement de l'application et de la base de données en arrière-plan
+                    # Lancement de l'application et de la base de données en arrière-plan
                     docker compose up -d
 
                     echo "=== État des conteneurs ==="
@@ -63,7 +65,7 @@ pipeline {
 
                     echo "=== Attente du healthcheck de Petclinic ==="
 
-                    // Récupération de l’ID du conteneur petclinic
+                    # Récupération de l’ID du conteneur petclinic
                     PET_ID=\$(docker compose ps -q petclinic)
 
                     if [ -z "\$PET_ID" ]; then
@@ -74,7 +76,7 @@ pipeline {
                     echo "Petclinic container ID: \$PET_ID"
                     echo "Waiting for health=healthy (max 180s)..."
 
-                    // Boucle d’attente du statut healthy (max 180 secondes)
+                    # Boucle d’attente du statut healthy (max 180 secondes)
                     for i in \$(seq 1 90); do
                       STATUS=\$(docker inspect -f '{{.State.Health.Status}}' \$PET_ID)
                       echo "Health status: \$STATUS"
@@ -96,7 +98,7 @@ pipeline {
                     echo "Petclinic is healthy"
                     echo "=== Smoke test HTTP depuis le conteneur ==="
 
-                    // Test HTTP exécuté depuis le conteneur pour éviter les problèmes réseau Jenkins/host
+                    # Test HTTP exécuté depuis le conteneur pour éviter les problèmes réseau Jenkins/host
                     docker exec \$PET_ID curl -fsS http://localhost:8080/
 
                     echo "Smoke test OK"
