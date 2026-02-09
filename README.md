@@ -172,3 +172,155 @@ For additional details, please refer to the blog post [Hello DCO, Goodbye CLA: S
 ## License
 
 The Spring PetClinic sample application is released under version 2.0 of the [Apache License](https://www.apache.org/licenses/LICENSE-2.0).
+
+
+
+--------------Partie Read me pour le rendu------------------------------
+
+
+Dockerisation et mise en place d’une CI/CD avec Jenkins
+
+Dans le cadre de ce projet, l’application Spring Petclinic a été conteneurisée à l’aide de Docker et Docker Compose, puis intégrée dans une pipeline CI/CD avec Jenkins.
+L’objectif est d’automatiser le build, le déploiement et la vérification du bon fonctionnement de l’application.
+
+Objectifs du travail réalisé
+
+Le travail effectué permet de :
+
+Construire automatiquement l’application dans une image Docker
+
+Lancer l’infrastructure complète (Petclinic + base de données MySQL)
+
+Vérifier le bon fonctionnement de l’application via un test simple (smoke test)
+
+Automatiser l’ensemble du processus à l’aide d’une pipeline Jenkins
+
+
+----------------Partie 1 ------------------------------------------
+
+-----Déploiement de l’application avec Docker Compose
+Nettoyage de l’environnement
+
+Avant tout lancement, un nettoyage est effectué afin d’éviter les conflits avec d’anciens conteneurs, volumes ou réseaux :
+
+docker compose down -v --remove-orphans
+docker system prune -f
+
+----Activation du cache Docker (BuildKit)
+
+Afin d’accélérer les builds Docker, notamment le téléchargement des dépendances Maven, le cache BuildKit est activé :
+
+export DOCKER_BUILDKIT=1
+export COMPOSE_DOCKER_CLI_BUILD=1
+
+-----Build et démarrage de l’application
+
+L’application Spring Petclinic et la base de données MySQL sont construites et lancées avec :
+
+docker compose up -d --build
+
+
+Lors du premier lancement, le temps de build est plus long car les dépendances sont téléchargées.
+Les lancements suivants sont plus rapides grâce au cache.
+
+---Vérification de l’état des conteneurs
+docker compose ps
+
+
+Les conteneurs petclinic et mysql doivent apparaître avec un état healthy.
+
+-----Test de fonctionnement de l’application
+
+Un test HTTP simple permet de vérifier que l’application répond correctement :
+
+curl -I http://localhost:9123/
+
+
+Il est également possible d’accéder à l’application via un navigateur :
+
+http://localhost:9123
+
+-----Arrêt et nettoyage après test
+docker compose down -v
+docker system prune -f
+---------------------------Partie 2 -------------------
+
+Mise en place de la pipeline CI/CD avec Jenkins
+Lancement de Jenkins avec accès à Docker
+
+Jenkins est exécuté dans un conteneur Docker avec accès au socket Docker de l’hôte afin de pouvoir lancer des commandes Docker dans la pipeline.
+
+---Un volume Docker est utilisé pour conserver la configuration Jenkins :
+
+docker volume create jenkins_home
+
+
+---Jenkins est ensuite démarré :
+
+docker run -d --name jenkins \
+  -p 8081:8080 -p 50000:50000 \
+  -v jenkins_home:/var/jenkins_home \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  --restart unless-stopped \
+  jenkins/jenkins:lts-jdk17
+
+---Accès à Jenkins
+
+Le mot de passe initial est récupéré avec :
+
+docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
+
+
+---Jenkins est accessible à l’adresse :
+
+http://localhost:8081
+
+----Installation de Docker dans Jenkins
+
+Afin de permettre l’exécution des commandes Docker dans la pipeline :
+
+docker exec -u root -it jenkins bash -lc "
+apt-get update &&
+apt-get install -y docker.io docker-compose &&
+docker version &&
+docker-compose version
+"
+
+----Création de la pipeline
+
+Une pipeline Jenkins est créée à partir du fichier Jenkinsfile présent dans le dépôt Git.
+La pipeline réalise automatiquement :
+
+le build Docker de l’application
+
+le lancement de l’infrastructure avec Docker Compose
+
+un smoke test HTTP
+
+l’arrêt et le nettoyage des conteneurs
+
+Résultat attendu
+
+La pipeline est considérée comme valide lorsque :
+
+le build Docker se termine sans erreur
+
+les conteneurs MySQL et Petclinic démarrent correctement
+
+le test HTTP est concluant
+
+la pipeline se termine avec le statut SUCCESS
+
+----Conclusion
+
+Cette mise en place permet :
+
+de déployer l’application Spring Petclinic de manière reproductible
+
+d’automatiser le build et les tests
+
+de garantir le bon fonctionnement de l’application grâce à une pipeline CI/CD complète
+
+Une fois Jenkins configuré, il suffit de lancer la pipeline pour construire, déployer et tester automatiquement l’application à partir du dépôt Git.
+
+

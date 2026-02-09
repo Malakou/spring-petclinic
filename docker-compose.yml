@@ -1,16 +1,44 @@
+# ============================================================================
+# Ce fichier docker-compose permet de déployer l’application Spring Petclinic
+# ainsi que sa base de données MySQL dans des conteneurs Docker.
+#
+# Il gère :
+#  - le démarrage de MySQL et de l’application
+#  - la configuration réseau entre les conteneurs
+#  - la persistance des données de la base
+#  - l’ordre de démarrage grâce aux healthchecks
+#
+# Une seule commande permet de lancer toute l’infrastructure :
+#   docker compose up -d
+# ============================================================================
+
 services:
+  # ---------------------------
+  # Service Base de données MySQL
+  # ---------------------------
   mysql:
+    # Image officielle MySQL version 8.0
     image: mysql:8.0
+
+    # Plugin d’authentification compatible avec Spring Boot
     command: --default-authentication-plugin=mysql_native_password
+
+    # Variables d’environnement pour initialiser la base
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: petclinic
-      MYSQL_USER: petclinic
-      MYSQL_PASSWORD: petclinic
+      MYSQL_ROOT_PASSWORD: root          # Mot de passe administrateur MySQL
+      MYSQL_DATABASE: petclinic          # Base de données créée au démarrage
+      MYSQL_USER: petclinic              # Utilisateur applicatif
+      MYSQL_PASSWORD: petclinic          # Mot de passe de l’utilisateur
+
+    # Volume pour rendre les données persistantes
     volumes:
       - mysql_petclinic_data:/var/lib/mysql
+
+    # Connexion au réseau Docker dédié
     networks:
       - petclinic-network
+
+    # Vérifie que MySQL est prêt à accepter des connexions
     healthcheck:
       test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -proot --silent"]
       interval: 10s
@@ -18,33 +46,57 @@ services:
       retries: 20
       start_period: 30s
 
+  # ---------------------------
+  # Service Application Spring Petclinic
+  # ---------------------------
   petclinic:
+    # Construction de l’image à partir du Dockerfile du projet
     build:
       context: .
       dockerfile: Dockerfile
+
+    # Nom de l’image générée
     image: spring-petclinic:latest
+
+    # Exposition du port : hôte 9123 → conteneur 8080
     ports:
       - "9123:8080"
+
+    # Variables d’environnement Spring Boot
     environment:
-      SPRING_PROFILES_ACTIVE: mysql
+      SPRING_PROFILES_ACTIVE: mysql      # Active le profil MySQL
       MYSQL_URL: "jdbc:mysql://mysql:3306/petclinic?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
-      MYSQL_USER: petclinic
-      MYSQL_PASS: petclinic
+      MYSQL_USER: petclinic              # Identifiant MySQL
+      MYSQL_PASS: petclinic              # Mot de passe MySQL
+
+    # Connexion au même réseau que MySQL
     networks:
       - petclinic-network
+
+    # Démarre seulement si MySQL est healthy
     depends_on:
       mysql:
         condition: service_healthy
+
+    # Vérifie que l’application répond en HTTP
     healthcheck:
       test: ["CMD-SHELL", "curl -fsS http://localhost:8080/ >/dev/null || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 20
       start_period: 30s
+
+    # Redémarrage automatique en cas de crash
     restart: unless-stopped
 
+# ---------------------------
+# Réseau Docker dédié au projet
+# ---------------------------
 networks:
   petclinic-network:
 
+# ---------------------------
+# Volume pour persister les données MySQL
+# ---------------------------
 volumes:
   mysql_petclinic_data:
